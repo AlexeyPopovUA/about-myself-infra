@@ -1,0 +1,48 @@
+name: Feature branch build for S3
+
+on:
+  push:
+    branches:
+      - '**'
+
+  workflow_dispatch:
+
+env:
+  DEFAULT_BRANCH: master
+  AWS_HOSTING_S3_BUCKET: "about-myself-hosting"
+  AWS_AUTH_ROLE: "arn:aws:iam::026090449790:role/gha-aws-oidc-oidbc-prod-ghaawsoidcroleprodADA66B76-16JXA65ME5F0Z"
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v3
+
+      - name: Prepare variables
+        run: echo SAFE_SOURCE_NAME=$(echo "${{ github.ref_name }}" | sed -r 's/[/.@_]+/-/g') >> $GITHUB_ENV
+
+      - name: Install, type-check, lint
+        run: |
+          npm ci
+          npm run type-check
+          npm run lint
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: eu-west-1
+          role-to-assume: ${{ env.AWS_AUTH_ROLE }}
+
+      - name: Deploy infrastructure
+        if: env.SAFE_SOURCE_NAME == env.DEFAULT_BRANCH
+        run: npm run deploy
+
+      - name: Diff infrastructure
+        if: env.SAFE_SOURCE_NAME != env.DEFAULT_BRANCH
+        run: npm run cdk-diff-stacks

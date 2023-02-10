@@ -1,0 +1,29 @@
+{
+  "name": "about-myself-hosting",
+  "version": "0.0.0",
+  "description": "",
+  "scripts": {
+    "clean": "rm -rf ./cdk.out",
+    "cdk-synth-stacks": "cdk synth",
+    "cdk-diff-stacks": "cdk diff",
+    "deploy": "cdk deploy about-myself-*",
+    "lint": "eslint . --ext .ts",
+    "type-check": "tsc",
+    "update-dependencies": "npx npm-check-updates -u --packageFile package.json"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^18.13.0",
+    "@typescript-eslint/eslint-plugin": "^5.51.0",
+    "@typescript-eslint/parser": "^5.51.0",
+    "aws-cdk": "^2.64.0",
+    "aws-cdk-lib": "^2.64.0",
+    "constructs": "^10.1.246",
+    "eslint": "^8.33.0",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-plugin-import": "^2.27.5",
+    "prettier": "^2.8.4",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.5"
+  }
+}
