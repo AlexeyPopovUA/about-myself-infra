@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 env:
-  DEFAULT_BRANCH: master
+  DEFAULT_BRANCH: main
   AWS_HOSTING_S3_BUCKET: "about-myself-hosting"
   AWS_AUTH_ROLE: "arn:aws:iam::026090449790:role/gha-aws-oidc-oidbc-prod-ghaawsoidcroleprodADA66B76-16JXA65ME5F0Z"
 
