@@ -1,6 +1,6 @@
 import { Construct } from "constructs";
 import { Duration, RemovalPolicy, Stack } from "aws-cdk-lib";
-import {AaaaRecord, ARecord, HostedZone, RecordTarget } from "aws-cdk-lib/aws-route53";
+import {AaaaRecord, ARecord, CnameRecord, HostedZone, RecordTarget } from "aws-cdk-lib/aws-route53";
 import { Certificate, CertificateValidation } from "aws-cdk-lib/aws-certificatemanager";
 import {
     AllowedMethods,
@@ -52,6 +52,9 @@ export class HostingStack extends Stack {
         const certificate = new Certificate(this, `${props.projectName}-certificate`, {
             domainName: props.domainName,
             subjectAlternativeNames: [
+                `www.${props.domainName}`,
+                `ww.${props.domainName}`,
+                `w.${props.domainName}`,
                 ...props.additionalNames
             ],
             validation: CertificateValidation.fromDns(hostedZone)
@@ -131,7 +134,10 @@ export class HostingStack extends Stack {
                 }
             ],
             domainNames: [
-                props.domainName
+                props.domainName,
+                `w.${props.domainName}`,
+                `ww.${props.domainName}`,
+                `www.${props.domainName}`
             ],
             defaultBehavior: {
                 allowedMethods: AllowedMethods.ALLOW_GET_HEAD_OPTIONS,
@@ -207,6 +213,24 @@ export class HostingStack extends Stack {
             recordName: props.domainName,
             zone: hostedZone,
             target: RecordTarget.fromAlias(new CloudFrontTarget(prodDistribution))
+        });
+
+        new CnameRecord(this, `${props.projectName}-record-cname-www`, {
+            recordName: `www.${props.domainName}`,
+            zone: hostedZone,
+            domainName: props.domainName
+        });
+
+        new CnameRecord(this, `${props.projectName}-record-cname-ww`, {
+            recordName: `ww.${props.domainName}`,
+            zone: hostedZone,
+            domainName: props.domainName
+        });
+
+        new CnameRecord(this, `${props.projectName}-record-cname-w`, {
+            recordName: `w.${props.domainName}`,
+            zone: hostedZone,
+            domainName: props.domainName
         });
 
         props.additionalNames.forEach(name => {
