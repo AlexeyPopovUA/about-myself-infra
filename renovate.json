@@ -1,0 +1,10 @@
+{
+  "extends": [
+    "config:base"
+  ],
+  "automerge": true,
+  "schedule": [
+    "after 8am every weekend",
+    "before 7pm every weekend"
+  ]
+}
